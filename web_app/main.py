@@ -10,6 +10,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from sqlalchemy import URL
 
+from pet_registry.config import resolve_database_url
 from pet_registry.models import (
     PetDetails,
     PetNotFoundError,
@@ -87,12 +88,10 @@ def save_pet(request: Request, form: PetInput, pet_id: int | None = None) -> Res
 
 
 def create_app(database_url: str | URL | None = None) -> FastAPI:
-    if database_url is None:
-        database_url = URL.create("sqlite", database=str(WEB_DIR.parent / "pets-web.sqlite3"))
-
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-        registry = PetRegistry(database_url)
+        url = resolve_database_url() if database_url is None else database_url
+        registry = PetRegistry(url)
         app.state.registry = registry
         try:
             yield

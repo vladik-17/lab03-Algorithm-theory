@@ -27,7 +27,7 @@
                 <tbody>
                     {% for pet in pets %}
                     <tr>
-                        <th scope="row">{{ pet.name }}<span class="secondary">№ {{ pet.id }}</span></th>
+                        <th scope="row">{{ pet.name }}</th>
                         <td>{{ pet.species }}{% if pet.breed %}<span class="secondary">{{ pet.breed }}</span>{% endif %}</td>
                         <td>{{ pet.owner }}</td>
                         <td>{% if pet.birth_date %}{{ pet.birth_date.strftime('%d.%m.%Y') }}{% else %}—{% endif %}</td>

@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from dataclasses import asdict
 from datetime import UTC, date, datetime, time, timedelta
 
-from sqlalchemy import URL, create_engine, delete, select, update
+from sqlalchemy import URL, create_engine, delete, select, text, update
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -18,7 +18,11 @@ class PetRegistry:
         self._engine = create_engine(database_url, pool_pre_ping=True)
         self._sessions = sessionmaker(self._engine, expire_on_commit=False)
         try:
-            Base.metadata.create_all(self._engine)
+            with self._engine.begin() as connection:
+                if connection.dialect.name == "postgresql":
+                    # Один клиент за раз создаёт таблицы при первом запуске.
+                    connection.execute(text("SELECT pg_advisory_xact_lock(47101, 12)"))
+                Base.metadata.create_all(connection)
         except SQLAlchemyError as error:
             self.close()
             raise StorageError("Не удалось открыть базу данных.") from error

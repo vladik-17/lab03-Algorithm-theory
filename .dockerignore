@@ -1,0 +1,8 @@
+*
+!Dockerfile
+!requirements.txt
+!pet_registry/
+!pet_registry/**
+!web_app/
+!web_app/**
+**/__pycache__/

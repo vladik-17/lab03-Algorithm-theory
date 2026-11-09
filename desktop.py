@@ -1,6 +1,5 @@
 import sys
 from datetime import date
-from pathlib import Path
 
 from PySide6.QtCharts import QBarCategoryAxis, QBarSeries, QBarSet, QChart, QChartView, QValueAxis
 from PySide6.QtCore import QSignalBlocker, Qt
@@ -23,8 +22,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from sqlalchemy import URL
-
+from pet_registry.config import resolve_database_url
 from pet_registry.models import Pet, PetDetails, RegistryError, parse_birth_date
 from pet_registry.storage import PetRegistry
 
@@ -298,9 +296,8 @@ class MainWindow(QMainWindow):
 def main() -> int:
     app = QApplication(sys.argv)
     app.setApplicationName("Реестр питомцев")
-    database_path = Path(__file__).resolve().with_name("pets.sqlite3")
     try:
-        registry = PetRegistry(URL.create("sqlite", database=str(database_path)))
+        registry = PetRegistry(resolve_database_url())
     except RegistryError as error:
         QMessageBox.critical(None, "Реестр питомцев", str(error))
         return 1
