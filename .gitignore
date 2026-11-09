@@ -1,0 +1,7 @@
+__pycache__/
+.pytest_cache/
+.venv/
+*.sqlite3
+*.sqlite3-*
+~$*.docx
+/algorythms_python_lab_03.docx
