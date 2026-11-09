@@ -25,6 +25,20 @@ class StorageError(RegistryError):
     """Хранилище недоступно или операция не выполнена."""
 
 
+def parse_birth_date(text: str) -> date | None:
+    value = text.strip()
+    if not value:
+        return None
+    message = "Укажите дату рождения в формате ГГГГ-ММ-ДД."
+    try:
+        birth_date = date.fromisoformat(value)
+    except ValueError as error:
+        raise PetValidationError(message) from error
+    if birth_date.isoformat() != value:
+        raise PetValidationError(message)
+    return birth_date
+
+
 @dataclass(frozen=True)
 class PetDetails:
     name: str

@@ -25,7 +25,7 @@ from PySide6.QtWidgets import (
 )
 from sqlalchemy import URL
 
-from pet_registry.models import Pet, PetDetails, PetValidationError, RegistryError
+from pet_registry.models import Pet, PetDetails, RegistryError, parse_birth_date
 from pet_registry.storage import PetRegistry
 
 
@@ -93,22 +93,12 @@ class PetForm(QGroupBox):
         self.delete_button.setEnabled(pet is not None)
 
     def details(self) -> PetDetails:
-        text = self.birth_date.text().strip()
-        birth_date = None
-        if text:
-            try:
-                birth_date = date.fromisoformat(text)
-            except ValueError as error:
-                raise PetValidationError("Укажите дату рождения в формате ГГГГ-ММ-ДД.") from error
-            if birth_date.isoformat() != text:
-                raise PetValidationError("Укажите дату рождения в формате ГГГГ-ММ-ДД.")
-
         return PetDetails(
             name=self.name.text(),
             species=self.species.text(),
             owner=self.owner.text(),
             breed=self.breed.text(),
-            birth_date=birth_date,
+            birth_date=parse_birth_date(self.birth_date.text()),
         )
 
 
@@ -167,6 +157,9 @@ class MainWindow(QMainWindow):
         tabs = QTabWidget()
         tabs.addTab(self._pets_page(), "Питомцы")
         tabs.addTab(self._activity_page(), "Активность")
+        help_button = QPushButton("Справка")
+        help_button.clicked.connect(self._show_help)
+        tabs.setCornerWidget(help_button, Qt.Corner.TopRightCorner)
         self.setCentralWidget(tabs)
         self.refresh()
 
@@ -289,6 +282,17 @@ class MainWindow(QMainWindow):
 
     def _show_error(self, error: RegistryError) -> None:
         QMessageBox.warning(self, "Реестр питомцев", str(error))
+
+    def _show_help(self) -> None:
+        QMessageBox.information(
+            self,
+            "Справка",
+            "Заполните кличку, вид и владельца, затем нажмите «Добавить питомца». "
+            "Дату рождения можно указать в формате ГГГГ-ММ-ДД.\n\n"
+            "Для правки или удаления выберите строку в таблице и нажмите "
+            "«Сохранить изменения» или «Удалить».\n\n"
+            "Журнал и график за семь дней находятся на вкладке «Активность».",
+        )
 
 
 def main() -> int:

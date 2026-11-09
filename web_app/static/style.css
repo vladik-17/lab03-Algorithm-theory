@@ -1,0 +1,197 @@
+:root {
+    color-scheme: light;
+    font-family: system-ui, sans-serif;
+    color: #172b29;
+    background: #f2f6f5;
+    --muted: #526764;
+    --accent: #196b60;
+    --line: #d7e3e0;
+}
+
+* { box-sizing: border-box; }
+
+body { margin: 0; }
+
+.shell {
+    width: min(1180px, calc(100% - 2rem));
+    margin-inline: auto;
+}
+
+.topbar {
+    color: white;
+    background: #143b36;
+}
+
+.topbar-inner, .section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+}
+
+.topbar-inner {
+    flex-wrap: wrap;
+    min-height: 4rem;
+    padding-block: .75rem;
+}
+
+.topbar a { color: inherit; }
+.brand { font-size: 1.125rem; font-weight: 700; text-decoration: none; }
+nav { display: flex; flex-wrap: wrap; gap: 1rem; }
+
+a { color: var(--accent); text-underline-offset: .2em; }
+
+main { padding-block: 1.75rem 2.5rem; }
+h1, h2, h3, p, figure { margin: 0; }
+h1 { font-size: clamp(1.65rem, 4vw, 2.25rem); }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1.05rem; }
+
+.intro p, .help p { margin-top: .4rem; color: var(--muted); }
+
+.workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 20rem);
+    align-items: start;
+    gap: 1rem;
+    margin-top: 1.25rem;
+}
+
+.panel {
+    min-width: 0;
+    padding: 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: .75rem;
+    background: white;
+}
+
+.badge {
+    padding: .25rem .625rem;
+    border-radius: 1rem;
+    color: #245b54;
+    background: #e5f1ee;
+    white-space: nowrap;
+    font-size: .875rem;
+}
+
+.empty {
+    margin-top: 1rem;
+    padding: .875rem;
+    border: 1px dashed var(--line);
+    border-radius: .5rem;
+    color: var(--muted);
+}
+
+.table-scroll { overflow-x: auto; margin-top: .875rem; }
+
+table {
+    width: 100%;
+    min-width: 28rem;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: .925rem;
+}
+
+th, td { padding: .65rem .5rem; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+thead th { color: var(--muted); font-size: .825rem; }
+.secondary { display: block; color: var(--muted); font-size: .825rem; font-weight: 400; }
+.row-actions { display: grid; gap: .35rem; }
+
+.delete-button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #983c33;
+    text-decoration: underline;
+    text-underline-offset: .2em;
+}
+
+.pet-form { display: grid; gap: .75rem; margin-top: .875rem; }
+label { font-size: .925rem; font-weight: 600; }
+
+input, button { font: inherit; }
+
+input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    margin-top: .25rem;
+    padding: .45rem .625rem;
+    border: 1px solid #aec2be;
+    border-radius: .375rem;
+    background: #fbfdfd;
+    font-weight: 400;
+}
+
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.topbar a:focus-visible { outline-color: white; }
+
+.form-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .75rem; }
+
+.primary {
+    padding: .575rem .875rem;
+    border: 0;
+    border-radius: .375rem;
+    color: white;
+    background: var(--accent);
+    font-weight: 600;
+}
+
+.primary:hover { background: #14594f; }
+
+.error {
+    margin-top: .875rem;
+    padding: .75rem;
+    border-radius: .375rem;
+    background: #fff1ee;
+    color: #8c342b;
+}
+
+.activity, .help { margin-top: 1rem; }
+.activity figure { margin-block: .75rem 1.25rem; }
+figcaption { color: var(--muted); }
+
+.chart {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: .5rem;
+    margin: .75rem 0 0;
+    padding: .75rem;
+    border: 1px solid var(--line);
+    border-radius: .5rem;
+    background: #f7fbfa;
+    list-style: none;
+    text-align: center;
+    font-size: .875rem;
+}
+
+.bar-track {
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    height: 6rem;
+    margin-block: .25rem;
+    border-bottom: 1px solid #aec2be;
+}
+
+.bar {
+    width: min(60%, 3.5rem);
+    border-radius: .25rem .25rem 0 0;
+    background: var(--accent);
+}
+
+.error-page a { display: inline-block; margin-top: 1rem; }
+
+@media (max-width: 800px) {
+    .workspace { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 480px) {
+    .shell { width: calc(100% - 1rem); }
+    .panel { padding: .75rem; }
+    table { min-width: 0; table-layout: fixed; font-size: .8rem; }
+    th, td { padding: .5rem .25rem; }
+    thead th, .row-actions { font-size: .75rem; }
+    .chart { padding: .5rem .25rem; gap: .25rem; font-size: .75rem; }
+}

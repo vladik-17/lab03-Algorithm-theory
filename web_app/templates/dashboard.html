@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="intro">
+    <h1>Домашние животные</h1>
+    <p>Карточки питомцев и история изменений</p>
+</div>
+
+<div class="workspace">
+    <section class="panel" id="pets" aria-labelledby="pets-title">
+        <div class="section-heading">
+            <h2 id="pets-title">Питомцы</h2>
+            <span class="badge">Карточек: {{ pets | length }}</span>
+        </div>
+        {% if pets %}
+        <div class="table-scroll">
+            <table aria-labelledby="pets-title">
+                <thead>
+                    <tr>
+                        <th scope="col">Кличка</th>
+                        <th scope="col">Вид и порода</th>
+                        <th scope="col">Владелец</th>
+                        <th scope="col">Дата рождения</th>
+                        <th scope="col">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pet in pets %}
+                    <tr>
+                        <th scope="row">{{ pet.name }}<span class="secondary">№ {{ pet.id }}</span></th>
+                        <td>{{ pet.species }}{% if pet.breed %}<span class="secondary">{{ pet.breed }}</span>{% endif %}</td>
+                        <td>{{ pet.owner }}</td>
+                        <td>{% if pet.birth_date %}{{ pet.birth_date.strftime('%d.%m.%Y') }}{% else %}—{% endif %}</td>
+                        <td>
+                            <div class="row-actions">
+                                <a href="{{ url_for('index') }}?edit={{ pet.id }}#pet-form">Изменить</a>
+                                <form method="post" action="{{ url_for('delete_pet', pet_id=pet.id) }}"
+                                      onsubmit="return confirm('Удалить карточку питомца?')">
+                                    <button class="delete-button" type="submit">Удалить</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="empty">Карточек пока нет. Добавьте первого питомца через форму.</p>
+        {% endif %}
+    </section>
+
+    <section class="panel form-panel" id="pet-form" aria-labelledby="form-title">
+        <h2 id="form-title">{% if pet_id is none %}Новая карточка{% else %}Карточка № {{ pet_id }}{% endif %}</h2>
+        {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+        <form class="pet-form" method="post"
+              action="{{ url_for('add_pet') if pet_id is none else url_for('edit_pet', pet_id=pet_id) }}">
+            <label>Кличка <span aria-hidden="true">*</span><input name="name" value="{{ form.name }}" required></label>
+            <label>Вид <span aria-hidden="true">*</span><input name="species" value="{{ form.species }}" required></label>
+            <label>Владелец <span aria-hidden="true">*</span><input name="owner" value="{{ form.owner }}" required></label>
+            <label>Порода<input name="breed" value="{{ form.breed }}"></label>
+            <label>Дата рождения<input type="date" name="birth_date" value="{{ form.birth_date }}"></label>
+            <p class="secondary">* Обязательные поля</p>
+            <div class="form-actions">
+                {% if pet_id is none %}
+                <button class="primary" type="submit">Добавить питомца</button>
+                {% else %}
+                <button class="primary" type="submit">Сохранить изменения</button>
+                <a href="{{ url_for('index') }}#pet-form">Отмена</a>
+                {% endif %}
+            </div>
+        </form>
+    </section>
+</div>
+
+<section class="panel activity" id="activity" aria-labelledby="activity-title">
+    <h2 id="activity-title">Активность</h2>
+    <figure>
+        <figcaption>Операции за последние 7 дней (UTC)</figcaption>
+        <ol class="chart">
+            {% for day, count in days %}
+            <li>
+                <strong>{{ count }}</strong>
+                <div class="bar-track" aria-hidden="true">
+                    <div class="bar" style="height: {{ (100 * count / peak) | round(2) }}%"></div>
+                </div>
+                <time datetime="{{ day.isoformat() }}">{{ day.strftime('%d.%m') }}</time>
+            </li>
+            {% endfor %}
+        </ol>
+    </figure>
+
+    <h3 id="journal-title">Журнал активности</h3>
+    {% if activity %}
+    <div class="table-scroll">
+        <table aria-labelledby="journal-title">
+            <thead>
+                <tr>
+                    <th scope="col">Время (UTC)</th>
+                    <th scope="col">Операция</th>
+                    <th scope="col">№ питомца</th>
+                    <th scope="col">Кличка</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in activity %}
+                <tr>
+                    <td>{{ event.occurred_at.strftime('%d.%m.%Y %H:%M:%S') }}</td>
+                    <td>{{ event.kind.value }}</td>
+                    <td>{{ event.pet_id }}</td>
+                    <td>{{ event.pet_name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Здесь появятся добавления, правки и удаления карточек.</p>
+    {% endif %}
+</section>
+
+<section class="panel help" id="help" aria-labelledby="help-title">
+    <h2 id="help-title">Справка</h2>
+    <p>Заполните кличку, вид и владельца, затем нажмите «Добавить питомца». Для правки или удаления используйте кнопки в строке таблицы. В разделе «Активность» можно посмотреть число операций по дням и до 50 последних записей журнала.</p>
+</section>
+{% endblock %}

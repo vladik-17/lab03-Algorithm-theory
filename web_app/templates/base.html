@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Реестр питомцев{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <div class="shell topbar-inner">
+            <a class="brand" href="{{ url_for('index') }}">Реестр питомцев</a>
+            <nav aria-label="Разделы реестра">
+                <a href="{{ url_for('index') }}#pets">Питомцы</a>
+                <a href="{{ url_for('index') }}#activity">Активность</a>
+                <a href="{{ url_for('index') }}#help">Справка</a>
+            </nav>
+        </div>
+    </header>
+    <main class="shell">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
