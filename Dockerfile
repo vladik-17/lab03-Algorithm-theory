@@ -4,7 +4,7 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 
 COPY requirements.txt .
-RUN sed '/^PySide6/d' requirements.txt > /tmp/requirements-web.txt \
+RUN sed -e '/^PySide6/d' -e '/^pytest/d' requirements.txt > /tmp/requirements-web.txt \
     && pip install --no-cache-dir -r /tmp/requirements-web.txt \
     && rm /tmp/requirements-web.txt
 
